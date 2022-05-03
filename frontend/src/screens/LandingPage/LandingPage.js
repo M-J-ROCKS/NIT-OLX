@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import { Button, Container, Row, Col } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import "./LandingPage.css";
+
 function LandingPage({ history }) {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+  const dispatch=useDispatch()
 
   useEffect(() => {
     if (userInfo) {
@@ -13,6 +15,8 @@ function LandingPage({ history }) {
       history.push("/home");
     }
   }, [history])
+
+  
 
   return (
     <div className="main">

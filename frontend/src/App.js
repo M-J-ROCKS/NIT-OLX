@@ -14,6 +14,9 @@ import CreateAd from './screens/createAd/CreateAd';
 import UpdateAd from './screens/createAd/UpdateAd';
 import AdScreen from './screens/AdScreen/AdScreen';
 import ChatScreen from './screens/ChatScreen/ChatScreen';
+import MyRequestsScreen from './screens/MyRequestsScreen/MyRequestsScreen';
+import LoginScreen2 from './screens/LoginScreen/LoginScreen2';
+import ContactUs from './screens/ContactUs/ContactUs';
 
 function App() {
   const [search, setSearch] = useState("");
@@ -26,11 +29,16 @@ function App() {
       {userInfo&&<Header setSearch={setSearch}/>}
       <Route path='/' component={LandingPage} exact/>
       <Route path='/login' component={LoginScreen} />
+      <Route path='/login2' component={LoginScreen2} />
       <Route path='/register' component={RegisterScreen} />
       {/* <Route path='/home' component={HomeScreen} /> */}
       <Route path='/myads' component={MyAds} />
       <Route path='/createad' component={CreateAd} />
       <Route path='/ad/:id' component={AdScreen} />
+      <Route path='/contactUs' component={ContactUs} />
+      <Route path='/myrequests' component={({ history }) => (
+          <MyRequestsScreen search={search} history={history} />
+        )} />
       <Route
         path="/home"
         component={({ history }) => (

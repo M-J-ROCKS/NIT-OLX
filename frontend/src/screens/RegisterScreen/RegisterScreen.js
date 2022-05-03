@@ -9,10 +9,12 @@ import ErrorMessage from '../../components/ErrorMessage'
 import { useEffect } from 'react'
 import { Register } from '../../actions/userActions'
 import { useDispatch, useSelector } from 'react-redux'
+import {GoogleLogin} from 'react-google-login'
+
 
 const RegisterScreen = ({ history }) => {
-    const [email, setEmail] = useState();
-    const [name, setName] = useState();
+    const [email, setEmail] = useState("");
+    const [name, setName] = useState("");
     const [pic, setPic] = useState("");
     const [password, setPassword] = useState();
     const [ConfirmPassword, setConfirmPassword] = useState();
@@ -29,8 +31,8 @@ const RegisterScreen = ({ history }) => {
     }, [history, userInfo])
     const submitHandler = async (e) => {
         e.preventDefault();
-        if (password !== ConfirmPassword) {
-            setMessage("Password Dont Match");
+        if (password !== ConfirmPassword&&email===""&&name==="") {
+            setMessage("Incorrect Input Fields");
         }
         else {
             if (!pic) {
@@ -62,6 +64,26 @@ const RegisterScreen = ({ history }) => {
             }
         }
     }
+    const googleSuccess=async (res)=>{
+        console.log(res)
+        const result=res?.profileObj
+        const token=res?.tokenId
+    
+        try{
+            setName(result.name);
+            setEmail(result.email);
+            // setPic(result.imageUrl);
+            console.log("Register")
+        }catch(error){
+    
+        }
+    }
+    
+    const googleFailure=(error)=>{
+        console.log("Google Sign In",error)
+        console.log('Google Sign in was unsuccessful')
+    }
+
     return (
         <MainScreen title="REGISTER">
             {error && <ErrorMessage variant='danger'>{error}</ErrorMessage>}
@@ -116,6 +138,20 @@ const RegisterScreen = ({ history }) => {
                 <Button variant="primary" type="submit">
                     Submit
                 </Button>
+                <GoogleLogin 
+                    clientId='477141315812-3gqgbv4ilrkpmkk9soalib5pg6513hs7.apps.googleusercontent.com'
+                    render={(renderProps)=>(
+                        <Button 
+                            onClick={renderProps.onClick}
+                            color="primary"
+                            disabled={renderProps.disabled}
+                        >Google Sign In
+                            </Button>
+                    )}
+                    onSuccess={googleSuccess}
+                    onFailure={googleFailure}
+                    cookiePolicy="single_host_origin"
+                />
                 <Row className='py-3'>
                     <Col>
                         Already have an account ? <Link to='/login'>Login Here</Link>

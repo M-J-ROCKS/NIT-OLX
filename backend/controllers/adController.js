@@ -4,7 +4,7 @@ const cloudinary = require("../utlis/cloudinary");
 const asyncHandler = require('express-async-handler');
 
 const allAds = asyncHandler(async (req, res) => {
-    const ads = await Ads.find({ buyer: null }).populate("seller", "name pic");
+    const ads = await Ads.find({ buyer: null }).populate("seller requesters", "name pic");
     res.status(200).json(ads);
 });
 const myAds = asyncHandler(async (req, res) => {
@@ -94,13 +94,16 @@ const buyRequest = asyncHandler(async (req, res) => {
         throw new Error("This Product has been sold");
     }
     if (ad.requesters.includes(req.user._id)) {
-        res.status(401);
-        throw new Error("Request Already Sent");
+        await ad.updateOne({ $pull: { requesters: req.user._id } });
+        res.status(200).json(ad);
+        console.log("Hello man")
+        
     }
-    if (ad) {
+    else if (ad) {
         // Ads.findByIdAndUpdate(req.params.id, { requester})
         await ad.updateOne({ $push: { requesters: req.user._id } });
         res.status(200).json(ad);
+        console.log("Hello man2")
     }
     else {
         res.status(404);

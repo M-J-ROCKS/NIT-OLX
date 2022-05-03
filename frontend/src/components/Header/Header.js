@@ -49,6 +49,9 @@ const Header = ({ setSearch }) => {
                             <Nav.Link href='/myads'>
                                     MY-ADS
                             </Nav.Link>
+                            <Nav.Link href='/myrequests'>
+                                    MY-REQUESTS
+                            </Nav.Link>
                             <NavDropdown title={`${userInfo.name}`} id="basic-nav-dropdown">
                                 <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                                 <NavDropdown.Divider />

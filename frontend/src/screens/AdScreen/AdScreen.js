@@ -22,21 +22,21 @@ const AdScreen = ({ match }) => {
     const { loading, ads, error } = singleAd;
     const [errMessage, setErrMessage] = useState('');
     const url = "https://wa.me/91"
-    // const [socket, setSocket] = useState(null);
-    // const [notification, setNotification] = useState([]);
-    // useEffect(() => {
-    //     setSocket(io("http://localhost:5000"));
-    // }, []);
-    // useEffect(() => {
-    //     socket?.emit("setup", userInfo);
-    // }, [socket, userInfo])
-    // useEffect(() => {
-    //     socket?.on("request received", (newRequest) => {
-    //         if (!notification.includes(newRequest)) {
-    //             setNotification([newRequest, ...notification]);
-    //         }
-    //     })
-    // });
+    
+    let temp;
+    const func=()=>{
+        // console.log("why")
+        temp=false;
+        ads?.requesters?.forEach((r)=>{
+            temp||=r._id===userInfo._id
+        })
+    }
+    func();
+    console.log(temp);
+    const [toggle,setToggle]=useState()
+    useEffect(()=>{
+        setToggle(temp);
+    },[])
     const chatHandler2=()=>{
         console.log("mannat jain")
         dispatch(fetchChat(ads.seller._id,userInfo._id))
@@ -55,6 +55,7 @@ const AdScreen = ({ match }) => {
         window.open(`${url}9771139594`);
     }
     const requestHandler = async (e) => {
+        setToggle(prevtoggle=>!prevtoggle)
         try {
             const config = {
                 headers: {
@@ -62,15 +63,8 @@ const AdScreen = ({ match }) => {
                     Authorization: `Bearer ${userInfo?.token}`,
                 },
             };
+            // console.log(ads?.requesters?.includes(userInfo._id))
             const { data } = await axios.post(`/api/ads/${match.params.id}/buyrequest`, {}, config);
-            // socket.emit('new request', data);
-            // socket.emit('new request',{
-            //     senderName:userInfo.name,
-            //     product:data.title
-            // });
-            setErrMessage('Request Sent');
-            // history.push('/home');
-            // console.log(data);
         } catch (error) {
             const message =
                 error.response && error.response.data.message
@@ -104,27 +98,6 @@ const AdScreen = ({ match }) => {
     }
     return (
         <Container className='mt-5'>
-            {/* <NotificationBadge
-                count={notification?.length}
-                effect={Effect.SCALE}
-            />
-            <NavDropdown title={'Bell'} id="basic-nav-dropdown">
-                {
-                    !(notification?.length) && <NavDropdown.Item>No New Messages</NavDropdown.Item>
-                }
-                {
-                    notification?.map((noti) => (
-                        <NavDropdown.Item key={noti._id}
-                            onClick={() => {
-                                setNotification(notification?.filter((n) => n != noti));
-                                history.push(`/ad/${noti._id}`);
-                            }}
-                        >
-                            {`New Buy Request for ${noti.title}`}</NavDropdown.Item>
-                    ))
-                }
-                <NavDropdown.Divider />
-            </NavDropdown> */}
             {loading && <Loading />}
             {error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
             {errMessage && <ErrorMessage variant="danger">{errMessage}</ErrorMessage>}
@@ -182,7 +155,9 @@ const AdScreen = ({ match }) => {
                             }
                             {
                                 (ads?.seller?._id !== userInfo._id) &&
-                                <><Button variant="danger" onClick={requestHandler}>Request</Button>
+                                <>
+                                    {toggle&&<Button variant="danger" onClick={requestHandler}>Cancel Request</Button>}
+                                    {!toggle&&<Button variant="success" onClick={requestHandler}>Request</Button>}
                                     <Button variant="danger" onClick={chatHandler}>Chat</Button>
                                 </>
                             }

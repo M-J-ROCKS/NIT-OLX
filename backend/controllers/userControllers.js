@@ -34,10 +34,24 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 });
 const authUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password ,g_token} = req.body;
 
     const user = await User.findOne({ email });
-    if (user && (await user.matchPassword(password))) {
+    // console.log(g_token)
+    console.log(user)
+    if(user&&g_token!==null){
+        console.log("Inside google oAuth")
+        res.json(
+            {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                pic: user.pic,
+                token: generateToken(user._id)
+            }
+        );
+    }
+    else if (user && (await user.matchPassword(password))) {
         res.json(
             {
                 _id: user._id,
